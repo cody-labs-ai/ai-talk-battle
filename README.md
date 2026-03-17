@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AIトークバトル (AI Talk Battle)
 
-## Getting Started
+2体のAIキャラクターが様々なテーマで熱く語り合うエンターテイメントアプリ
 
-First, run the development server:
+## Features
 
+- **8種類のキャラクター + カスタム**: 熱血教師、冷静な科学者、関西のおばちゃん、中二病の高校生、真面目すぎるAI、意識高い系起業家、シェイクスピア風、悪魔の弁護士
+- **5種類のモード**: ガチ口喧嘩、真面目ディベート、ビジネス壁打ち、漫才、恋愛相談
+- **リアルタイムストリーミング**: Gemini 2.0 Flash APIで生成されたメッセージが1文字ずつ表示
+- **LINE風チャットUI**: モバイルファーストで直感的なデザイン
+- **Xシェア機能**: バトル終了後にXで簡単にシェア
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS
+- Gemini 2.0 Flash API
+- Edge Runtime for streaming
+
+## Setup
+
+1. Clone and install:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create `.env.local`:
+```
+GEMINI_API_KEY=your_api_key_here
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Build for production:
+```bash
+npm run build
+```
 
-## Learn More
+## Deploy
 
-To learn more about Next.js, take a look at the following resources:
+Deploy to Vercel:
+```bash
+npx vercel --prod
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Or push to GitHub and connect to Vercel dashboard.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+- `GEMINI_API_KEY`: Your Google Gemini API key
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

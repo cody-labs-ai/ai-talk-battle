@@ -1,65 +1,111 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import CharacterSelect from '@/components/CharacterSelect';
+import ModeSelect from '@/components/ModeSelect';
+import ChatUI from '@/components/ChatUI';
+import { Character, Mode, Message } from '@/types';
 
 export default function Home() {
+  const [stage, setStage] = useState<'setup' | 'chat' | 'finished'>('setup');
+  const [character1, setCharacter1] = useState<Character | null>(null);
+  const [character2, setCharacter2] = useState<Character | null>(null);
+  const [mode, setMode] = useState<Mode | null>(null);
+  const [topic, setTopic] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const handleStart = () => {
+    if (character1 && character2 && mode && topic.trim()) {
+      setMessages([]);
+      setStage('chat');
+    }
+  };
+
+  const handleNewBattle = () => {
+    setStage('setup');
+    setCharacter1(null);
+    setCharacter2(null);
+    setMode(null);
+    setTopic('');
+    setMessages([]);
+  };
+
+  const handleFinish = () => {
+    setStage('finished');
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 className="text-4xl md:text-6xl font-bold text-center mb-2 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+          AIトークバトル
+        </h1>
+        <p className="text-center text-gray-400 mb-8">AI同士が熱く語り合う</p>
+
+        {stage === 'setup' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 shadow-2xl">
+              <h2 className="text-2xl font-bold mb-4">キャラクター選択</h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">キャラクター1</label>
+                  <CharacterSelect
+                    value={character1}
+                    onChange={setCharacter1}
+                    excludeId={character2?.id}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">キャラクター2</label>
+                  <CharacterSelect
+                    value={character2}
+                    onChange={setCharacter2}
+                    excludeId={character1?.id}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 shadow-2xl">
+              <h2 className="text-2xl font-bold mb-4">モード選択</h2>
+              <ModeSelect value={mode} onChange={setMode} />
+            </div>
+
+            <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 shadow-2xl">
+              <h2 className="text-2xl font-bold mb-4">トピック</h2>
+              <input
+                type="text"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder="何について話し合いますか？"
+                className="w-full bg-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <button
+              onClick={handleStart}
+              disabled={!character1 || !character2 || !mode || !topic.trim()}
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl text-xl transition-all transform hover:scale-105 disabled:hover:scale-100 shadow-lg"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+              バトル開始！
+            </button>
+          </div>
+        )}
+
+        {(stage === 'chat' || stage === 'finished') && character1 && character2 && mode && (
+          <ChatUI
+            character1={character1}
+            character2={character2}
+            mode={mode}
+            topic={topic}
+            messages={messages}
+            setMessages={setMessages}
+            onFinish={handleFinish}
+            onNewBattle={handleNewBattle}
+            finished={stage === 'finished'}
+          />
+        )}
+      </div>
+    </main>
   );
 }
