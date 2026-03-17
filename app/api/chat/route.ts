@@ -18,7 +18,6 @@ export async function POST(req: Request) {
 
     const opponent = currentSpeaker.id === character1.id ? character2 : character1;
 
-    // Build conversation history
     const conversationHistory = history
       .map((msg) => {
         const speaker = msg.character.id === character1.id ? character1.name : character2.name;
@@ -26,7 +25,6 @@ export async function POST(req: Request) {
       })
       .join('\n\n');
 
-    // Build system prompt
     const systemPrompt = `${currentSpeaker.systemPrompt}
 
 あなたは今、${opponent.name}と「${topic}」というテーマについて話しています。
@@ -48,14 +46,17 @@ ${conversationHistory || '(まだ会話は始まっていません)'}
       ? `テーマ「${topic}」について、${mode.name}モードで最初の発言をしてください。`
       : `相手の最後の発言を受けて、あなたの次の発言をしてください。`;
 
-    // Call Gemini API
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY not found');
+      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not configured' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
+    // Use non-streaming endpoint for reliability
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:streamGenerateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,55 +78,31 @@ ${conversationHistory || '(まだ会話は始まっていません)'}
     if (!response.ok) {
       const error = await response.text();
       console.error('Gemini API error:', error);
-      throw new Error('Gemini API request failed');
+      return new Response(JSON.stringify({ error: 'Gemini API failed: ' + response.status }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    // Stream response
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    // Simulate streaming by sending chars one by one
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
-
-        if (!reader) {
-          controller.close();
-          return;
+        // Send text in small chunks for typing effect
+        const chunkSize = 3;
+        for (let i = 0; i < text.length; i += chunkSize) {
+          const chunk = text.slice(i, i + chunkSize);
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ content: chunk })}\n\n`)
+          );
+          // Small delay for typing effect
+          await new Promise(r => setTimeout(r, 30));
         }
-
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const jsonStr = line.slice(6);
-                if (!jsonStr.trim()) continue;
-
-                try {
-                  const data = JSON.parse(jsonStr);
-                  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                  if (text) {
-                    controller.enqueue(
-                      encoder.encode(`data: ${JSON.stringify({ content: text })}\n\n`)
-                    );
-                  }
-                } catch (e) {
-                  // Ignore parse errors
-                }
-              }
-            }
-          }
-
-          controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-          controller.close();
-        } catch (error) {
-          controller.error(error);
-        }
+        controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+        controller.close();
       },
     });
 
