@@ -115,7 +115,8 @@ ${conversationHistory || '(まだ会話は始まっていません)'}
     });
   } catch (error) {
     console.error('Error in chat API:', error);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+    const msg = error instanceof Error ? error.message : String(error);
+    return new Response(JSON.stringify({ error: 'Error: ' + msg, hasKey: !!process.env.GEMINI_API_KEY, keyPrefix: (process.env.GEMINI_API_KEY || '').substring(0, 10) }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
