@@ -127,70 +127,117 @@ export default function ChatUI({
   };
 
   return (
-    <div className="space-y-4 animate-fadeIn">
-      {/* LINE-style header */}
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 flex-1">
-              <button className="text-[#06C755] hover:opacity-70 transition-opacity">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div className="flex-1 text-center">
-                <div className="font-semibold text-gray-800">
-                  {character1.name} vs {character2.name}
-                </div>
-                <div className="text-xs text-gray-500">{topic}</div>
-              </div>
-              <div className="bg-[#06C755] text-white text-xs px-2 py-1 rounded-full font-medium">
-                {mode.name}
-              </div>
-            </div>
+    <div className="w-full max-w-2xl mx-auto">
+      {/* LINE Header */}
+      <div className="bg-white h-14 flex items-center justify-between px-4 border-b border-gray-200">
+        <button
+          onClick={onNewBattle}
+          className="text-gray-700 hover:text-gray-900 transition-colors"
+          aria-label="Back"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div className="flex-1 text-center">
+          <div className="text-base font-medium text-gray-900" style={{ fontFamily: '-apple-system, sans-serif' }}>
+            {character1.name} vs {character2.name}
+          </div>
+          <div className="text-xs text-gray-500 bg-gray-100 inline-block px-2 py-0.5 rounded-full mt-0.5">
+            {mode.name}
           </div>
         </div>
+        <div className="w-6" /> {/* Spacer for centering */}
+      </div>
 
-        {/* LINE-style chat area with soft gray-green background */}
-        <div className="h-[500px] overflow-y-auto p-4 bg-[#7B9E89] space-y-4">
+      {/* LINE Chat Background */}
+      <div className="h-[500px] overflow-y-auto px-4 py-3" style={{ backgroundColor: '#9BBBA7' }}>
+        <div className="space-y-3">
           {messages.map((message, index) => {
-            const isChar1 = message.character.id === character1.id;
+            const isLeft = message.character.id === character1.id;
             return (
               <div
                 key={message.id}
-                className={`flex ${isChar1 ? 'justify-start' : 'justify-end'} animate-slideIn`}
+                className={`flex ${isLeft ? 'justify-start' : 'justify-end'} animate-slideIn`}
               >
-                <div className={`flex gap-2 max-w-[75%] ${isChar1 ? 'flex-row' : 'flex-row-reverse'}`}>
-                  {/* Avatar circle */}
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">
-                      {message.character.emoji}
-                    </div>
+                <div className={`flex gap-2 items-start ${isLeft ? 'flex-row' : 'flex-row-reverse'} max-w-[75%]`}>
+                  {/* Avatar */}
+                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xl flex-shrink-0">
+                    {message.character.emoji}
                   </div>
 
-                  {/* Message content */}
-                  <div className={`flex flex-col ${isChar1 ? 'items-start' : 'items-end'}`}>
-                    {/* Character name above bubble */}
-                    <div className={`text-xs text-gray-700 mb-1 px-1 ${isChar1 ? 'text-left' : 'text-right'}`}>
-                      {message.character.name}
-                    </div>
-
-                    {/* Speech bubble */}
-                    <div
-                      className={`px-4 py-2.5 shadow-sm ${
-                        isChar1
-                          ? 'bg-white text-gray-800 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
-                          : 'bg-[#06C755] text-white rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'
-                      }`}
-                    >
-                      <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {message.content}
+                  {/* Bubble Container */}
+                  <div className={`flex flex-col ${isLeft ? 'items-start' : 'items-end'}`}>
+                    {/* Name (only for left/opponent) */}
+                    {isLeft && (
+                      <div className="text-[11px] text-gray-600 mb-1 px-1" style={{ fontFamily: '-apple-system, sans-serif' }}>
+                        {message.character.name}
                       </div>
-                    </div>
+                    )}
 
-                    {/* Timestamp below bubble */}
-                    <div className="text-xs text-gray-600 mt-1 px-1">
-                      第{index + 1}話
+                    {/* Bubble with Tail */}
+                    <div className="relative">
+                      {isLeft ? (
+                        <>
+                          {/* Left Tail */}
+                          <div
+                            className="absolute left-0 top-0"
+                            style={{
+                              width: 0,
+                              height: 0,
+                              borderWidth: '0 8px 8px 0',
+                              borderStyle: 'solid',
+                              borderColor: 'transparent #FFFFFF transparent transparent',
+                              left: '-8px',
+                              top: 0,
+                            }}
+                          />
+                          {/* Left Bubble */}
+                          <div
+                            className="bubble-left px-[14px] py-[10px] text-[15px] leading-[1.5]"
+                            style={{
+                              backgroundColor: '#FFFFFF',
+                              color: '#000000',
+                              borderRadius: '2px 18px 18px 18px',
+                              fontFamily: '-apple-system, sans-serif',
+                              wordWrap: 'break-word',
+                              whiteSpace: 'pre-wrap',
+                            }}
+                          >
+                            {message.content}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {/* Right Tail */}
+                          <div
+                            className="absolute right-0 top-0"
+                            style={{
+                              width: 0,
+                              height: 0,
+                              borderWidth: '0 0 8px 8px',
+                              borderStyle: 'solid',
+                              borderColor: 'transparent transparent transparent #06C755',
+                              right: '-8px',
+                              top: 0,
+                            }}
+                          />
+                          {/* Right Bubble */}
+                          <div
+                            className="bubble-right px-[14px] py-[10px] text-[15px] leading-[1.5]"
+                            style={{
+                              backgroundColor: '#06C755',
+                              color: '#FFFFFF',
+                              borderRadius: '18px 2px 18px 18px',
+                              fontFamily: '-apple-system, sans-serif',
+                              wordWrap: 'break-word',
+                              whiteSpace: 'pre-wrap',
+                            }}
+                          >
+                            {message.content}
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -198,71 +245,167 @@ export default function ChatUI({
             );
           })}
 
-          {/* Streaming message */}
+          {/* Streaming Message */}
           {isTyping && streamingMessage && (
             <div
-              className={`flex ${
-                currentSpeaker.id === character1.id ? 'justify-start' : 'justify-end'
-              } animate-slideIn`}
+              className={`flex ${currentSpeaker.id === character1.id ? 'justify-start' : 'justify-end'} animate-slideIn`}
             >
-              <div className={`flex gap-2 max-w-[75%] ${currentSpeaker.id === character1.id ? 'flex-row' : 'flex-row-reverse'}`}>
-                {/* Avatar circle */}
-                <div className="flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">
-                    {currentSpeaker.emoji}
-                  </div>
+              <div className={`flex gap-2 items-start ${currentSpeaker.id === character1.id ? 'flex-row' : 'flex-row-reverse'} max-w-[75%]`}>
+                {/* Avatar */}
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xl flex-shrink-0">
+                  {currentSpeaker.emoji}
                 </div>
 
-                {/* Message content */}
+                {/* Bubble Container */}
                 <div className={`flex flex-col ${currentSpeaker.id === character1.id ? 'items-start' : 'items-end'}`}>
-                  {/* Character name above bubble */}
-                  <div className={`text-xs text-gray-700 mb-1 px-1 ${currentSpeaker.id === character1.id ? 'text-left' : 'text-right'}`}>
-                    {currentSpeaker.name}
-                  </div>
-
-                  {/* Speech bubble */}
-                  <div
-                    className={`px-4 py-2.5 shadow-sm ${
-                      currentSpeaker.id === character1.id
-                        ? 'bg-white text-gray-800 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
-                        : 'bg-[#06C755] text-white rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'
-                    }`}
-                  >
-                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                      {streamingMessage}
-                      <span className={`inline-block w-1 h-4 ml-1 animate-blink ${currentSpeaker.id === character1.id ? 'bg-gray-800' : 'bg-white'}`} />
+                  {/* Name (only for left/opponent) */}
+                  {currentSpeaker.id === character1.id && (
+                    <div className="text-[11px] text-gray-600 mb-1 px-1" style={{ fontFamily: '-apple-system, sans-serif' }}>
+                      {currentSpeaker.name}
                     </div>
-                  </div>
+                  )}
 
-                  {/* Timestamp below bubble */}
-                  <div className="text-xs text-gray-600 mt-1 px-1">
-                    第{messages.length + 1}話
+                  {/* Bubble with Tail */}
+                  <div className="relative">
+                    {currentSpeaker.id === character1.id ? (
+                      <>
+                        {/* Left Tail */}
+                        <div
+                          className="absolute left-0 top-0"
+                          style={{
+                            width: 0,
+                            height: 0,
+                            borderWidth: '0 8px 8px 0',
+                            borderStyle: 'solid',
+                            borderColor: 'transparent #FFFFFF transparent transparent',
+                            left: '-8px',
+                            top: 0,
+                          }}
+                        />
+                        {/* Left Bubble */}
+                        <div
+                          className="px-[14px] py-[10px] text-[15px] leading-[1.5]"
+                          style={{
+                            backgroundColor: '#FFFFFF',
+                            color: '#000000',
+                            borderRadius: '2px 18px 18px 18px',
+                            fontFamily: '-apple-system, sans-serif',
+                            wordWrap: 'break-word',
+                            whiteSpace: 'pre-wrap',
+                          }}
+                        >
+                          {streamingMessage}
+                          <span className="inline-block w-0.5 h-4 ml-1 bg-gray-800 animate-blink" />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Right Tail */}
+                        <div
+                          className="absolute right-0 top-0"
+                          style={{
+                            width: 0,
+                            height: 0,
+                            borderWidth: '0 0 8px 8px',
+                            borderStyle: 'solid',
+                            borderColor: 'transparent transparent transparent #06C755',
+                            right: '-8px',
+                            top: 0,
+                          }}
+                        />
+                        {/* Right Bubble */}
+                        <div
+                          className="px-[14px] py-[10px] text-[15px] leading-[1.5]"
+                          style={{
+                            backgroundColor: '#06C755',
+                            color: '#FFFFFF',
+                            borderRadius: '18px 2px 18px 18px',
+                            fontFamily: '-apple-system, sans-serif',
+                            wordWrap: 'break-word',
+                            whiteSpace: 'pre-wrap',
+                          }}
+                        >
+                          {streamingMessage}
+                          <span className="inline-block w-0.5 h-4 ml-1 bg-white animate-blink" />
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Typing indicator - three bouncing dots in white bubble */}
+          {/* Typing Indicator */}
           {isTyping && !streamingMessage && (
             <div
-              className={`flex ${
-                currentSpeaker.id === character1.id ? 'justify-start' : 'justify-end'
-              }`}
+              className={`flex ${currentSpeaker.id === character1.id ? 'justify-start' : 'justify-end'}`}
             >
-              <div className={`flex gap-2 ${currentSpeaker.id === character1.id ? 'flex-row' : 'flex-row-reverse'}`}>
-                {/* Avatar circle */}
-                <div className="flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">
-                    {currentSpeaker.emoji}
-                  </div>
+              <div className={`flex gap-2 items-start ${currentSpeaker.id === character1.id ? 'flex-row' : 'flex-row-reverse'}`}>
+                {/* Avatar */}
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xl flex-shrink-0">
+                  {currentSpeaker.emoji}
                 </div>
 
-                {/* Typing bubble */}
-                <div className={`${currentSpeaker.id === character1.id ? 'rounded-tr-2xl rounded-br-2xl rounded-bl-2xl' : 'rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'} bg-white px-4 py-3 shadow-sm flex items-center gap-1`}>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                {/* Typing Bubble */}
+                <div className="relative">
+                  {currentSpeaker.id === character1.id ? (
+                    <>
+                      {/* Left Tail */}
+                      <div
+                        className="absolute left-0 top-0"
+                        style={{
+                          width: 0,
+                          height: 0,
+                          borderWidth: '0 8px 8px 0',
+                          borderStyle: 'solid',
+                          borderColor: 'transparent #FFFFFF transparent transparent',
+                          left: '-8px',
+                          top: 0,
+                        }}
+                      />
+                      {/* Typing Bubble */}
+                      <div
+                        className="px-[14px] py-[10px] flex items-center gap-1"
+                        style={{
+                          backgroundColor: '#FFFFFF',
+                          borderRadius: '2px 18px 18px 18px',
+                        }}
+                      >
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Right Tail */}
+                      <div
+                        className="absolute right-0 top-0"
+                        style={{
+                          width: 0,
+                          height: 0,
+                          borderWidth: '0 0 8px 8px',
+                          borderStyle: 'solid',
+                          borderColor: 'transparent transparent transparent #FFFFFF',
+                          right: '-8px',
+                          top: 0,
+                        }}
+                      />
+                      {/* Typing Bubble */}
+                      <div
+                        className="px-[14px] py-[10px] flex items-center gap-1"
+                        style={{
+                          backgroundColor: '#FFFFFF',
+                          borderRadius: '18px 2px 18px 18px',
+                        }}
+                      >
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -270,32 +413,41 @@ export default function ChatUI({
 
           <div ref={messagesEndRef} />
         </div>
+      </div>
 
-        {/* Buttons area */}
+      {/* Bottom Area */}
+      <div className="bg-white px-4 py-3">
+        {/* Round Counter */}
+        <div className="text-center text-sm text-gray-500 mb-3" style={{ fontFamily: '-apple-system, sans-serif' }}>
+          ラウンド {Math.floor(messages.length / 2) + 1} / {MAX_ROUNDS}
+        </div>
+
+        {/* Buttons */}
         {finished && (
-          <div className="bg-white border-t border-gray-200 p-4 space-y-3 animate-fadeIn">
-            <div className="text-center text-sm text-gray-600">バトル終了！</div>
-            <div className="flex gap-3">
+          <div className="space-y-2 animate-fadeIn">
+            <div className="text-center text-sm text-gray-600 mb-3" style={{ fontFamily: '-apple-system, sans-serif' }}>
+              バトル終了！
+            </div>
+            <div className="flex gap-2">
               <button
                 onClick={handleShare}
-                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition-colors"
+                style={{ fontFamily: '-apple-system, sans-serif' }}
               >
                 Xでシェア
               </button>
               <button
                 onClick={onNewBattle}
-                className="flex-1 bg-[#06C755] hover:bg-[#05B04A] text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
+                className="flex-1 text-white font-medium py-3 rounded-lg transition-colors"
+                style={{ backgroundColor: '#06C755', fontFamily: '-apple-system, sans-serif' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#05B04A'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#06C755'}
               >
                 新しいバトル
               </button>
             </div>
           </div>
         )}
-      </div>
-
-      {/* Round counter */}
-      <div className="text-center text-sm text-gray-500">
-        ラウンド {Math.floor(messages.length / 2) + 1} / {MAX_ROUNDS}
       </div>
     </div>
   );
