@@ -1,6 +1,7 @@
 export interface Character {
   id: string;
   emoji: string;
+  iconName?: string;
   name: string;
   description: string;
   systemPrompt: string;
