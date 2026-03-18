@@ -128,44 +128,69 @@ export default function ChatUI({
 
   return (
     <div className="space-y-4 animate-fadeIn">
-      <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-4 shadow-2xl">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">{character1.emoji}</span>
-            <span className="font-bold">{character1.name}</span>
-          </div>
-          <div className="text-center">
-            <div className="text-xs text-gray-400">{mode.name}</div>
-            <div className="text-sm font-medium">{topic}</div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-bold">{character2.name}</span>
-            <span className="text-2xl">{character2.emoji}</span>
+      {/* LINE-style header */}
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 flex-1">
+              <button className="text-[#06C755] hover:opacity-70 transition-opacity">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="flex-1 text-center">
+                <div className="font-semibold text-gray-800">
+                  {character1.name} vs {character2.name}
+                </div>
+                <div className="text-xs text-gray-500">{topic}</div>
+              </div>
+              <div className="bg-[#06C755] text-white text-xs px-2 py-1 rounded-full font-medium">
+                {mode.name}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="h-[500px] overflow-y-auto space-y-3 p-4 bg-gray-900/50 rounded-xl">
-          {messages.map((message) => {
+        {/* LINE-style chat area with soft gray-green background */}
+        <div className="h-[500px] overflow-y-auto p-4 bg-[#7B9E89] space-y-4">
+          {messages.map((message, index) => {
             const isChar1 = message.character.id === character1.id;
             return (
               <div
                 key={message.id}
                 className={`flex ${isChar1 ? 'justify-start' : 'justify-end'} animate-slideIn`}
               >
-                <div
-                  className={`max-w-[70%] ${
-                    isChar1
-                      ? 'bg-gray-700 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
-                      : 'bg-purple-600 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'
-                  } p-3 shadow-lg`}
-                >
-                  <div className="flex items-start gap-2">
-                    <span className="text-xl">{message.character.emoji}</span>
-                    <div>
-                      <div className="text-xs text-gray-300 mb-1">{message.character.name}</div>
+                <div className={`flex gap-2 max-w-[75%] ${isChar1 ? 'flex-row' : 'flex-row-reverse'}`}>
+                  {/* Avatar circle */}
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">
+                      {message.character.emoji}
+                    </div>
+                  </div>
+
+                  {/* Message content */}
+                  <div className={`flex flex-col ${isChar1 ? 'items-start' : 'items-end'}`}>
+                    {/* Character name above bubble */}
+                    <div className={`text-xs text-gray-700 mb-1 px-1 ${isChar1 ? 'text-left' : 'text-right'}`}>
+                      {message.character.name}
+                    </div>
+
+                    {/* Speech bubble */}
+                    <div
+                      className={`px-4 py-2.5 shadow-sm ${
+                        isChar1
+                          ? 'bg-white text-gray-800 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
+                          : 'bg-[#06C755] text-white rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'
+                      }`}
+                    >
                       <div className="text-sm leading-relaxed whitespace-pre-wrap">
                         {message.content}
                       </div>
+                    </div>
+
+                    {/* Timestamp below bubble */}
+                    <div className="text-xs text-gray-600 mt-1 px-1">
+                      第{index + 1}話
                     </div>
                   </div>
                 </div>
@@ -173,43 +198,72 @@ export default function ChatUI({
             );
           })}
 
+          {/* Streaming message */}
           {isTyping && streamingMessage && (
             <div
               className={`flex ${
                 currentSpeaker.id === character1.id ? 'justify-start' : 'justify-end'
               } animate-slideIn`}
             >
-              <div
-                className={`max-w-[70%] ${
-                  currentSpeaker.id === character1.id
-                    ? 'bg-gray-700 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
-                    : 'bg-purple-600 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'
-                } p-3 shadow-lg`}
-              >
-                <div className="flex items-start gap-2">
-                  <span className="text-xl">{currentSpeaker.emoji}</span>
-                  <div>
-                    <div className="text-xs text-gray-300 mb-1">{currentSpeaker.name}</div>
+              <div className={`flex gap-2 max-w-[75%] ${currentSpeaker.id === character1.id ? 'flex-row' : 'flex-row-reverse'}`}>
+                {/* Avatar circle */}
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">
+                    {currentSpeaker.emoji}
+                  </div>
+                </div>
+
+                {/* Message content */}
+                <div className={`flex flex-col ${currentSpeaker.id === character1.id ? 'items-start' : 'items-end'}`}>
+                  {/* Character name above bubble */}
+                  <div className={`text-xs text-gray-700 mb-1 px-1 ${currentSpeaker.id === character1.id ? 'text-left' : 'text-right'}`}>
+                    {currentSpeaker.name}
+                  </div>
+
+                  {/* Speech bubble */}
+                  <div
+                    className={`px-4 py-2.5 shadow-sm ${
+                      currentSpeaker.id === character1.id
+                        ? 'bg-white text-gray-800 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
+                        : 'bg-[#06C755] text-white rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'
+                    }`}
+                  >
                     <div className="text-sm leading-relaxed whitespace-pre-wrap">
                       {streamingMessage}
-                      <span className="inline-block w-1 h-4 bg-white ml-1 animate-blink" />
+                      <span className={`inline-block w-1 h-4 ml-1 animate-blink ${currentSpeaker.id === character1.id ? 'bg-gray-800' : 'bg-white'}`} />
                     </div>
+                  </div>
+
+                  {/* Timestamp below bubble */}
+                  <div className="text-xs text-gray-600 mt-1 px-1">
+                    第{messages.length + 1}話
                   </div>
                 </div>
               </div>
             </div>
           )}
 
+          {/* Typing indicator - three bouncing dots in white bubble */}
           {isTyping && !streamingMessage && (
             <div
               className={`flex ${
                 currentSpeaker.id === character1.id ? 'justify-start' : 'justify-end'
               }`}
             >
-              <div className="bg-gray-700 rounded-full px-4 py-2 flex items-center gap-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100" />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200" />
+              <div className={`flex gap-2 ${currentSpeaker.id === character1.id ? 'flex-row' : 'flex-row-reverse'}`}>
+                {/* Avatar circle */}
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-xl shadow-sm">
+                    {currentSpeaker.emoji}
+                  </div>
+                </div>
+
+                {/* Typing bubble */}
+                <div className={`${currentSpeaker.id === character1.id ? 'rounded-tr-2xl rounded-br-2xl rounded-bl-2xl' : 'rounded-tl-2xl rounded-bl-2xl rounded-br-2xl'} bg-white px-4 py-3 shadow-sm flex items-center gap-1`}>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
               </div>
             </div>
           )}
@@ -217,19 +271,20 @@ export default function ChatUI({
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Buttons area */}
         {finished && (
-          <div className="mt-4 space-y-3 animate-fadeIn">
-            <div className="text-center text-sm text-gray-400">バトル終了！</div>
+          <div className="bg-white border-t border-gray-200 p-4 space-y-3 animate-fadeIn">
+            <div className="text-center text-sm text-gray-600">バトル終了！</div>
             <div className="flex gap-3">
               <button
                 onClick={handleShare}
-                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105"
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
               >
                 Xでシェア
               </button>
               <button
                 onClick={onNewBattle}
-                className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105"
+                className="flex-1 bg-[#06C755] hover:bg-[#05B04A] text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
               >
                 新しいバトル
               </button>
@@ -238,7 +293,8 @@ export default function ChatUI({
         )}
       </div>
 
-      <div className="text-center text-sm text-gray-400">
+      {/* Round counter */}
+      <div className="text-center text-sm text-gray-500">
         ラウンド {Math.floor(messages.length / 2) + 1} / {MAX_ROUNDS}
       </div>
     </div>
