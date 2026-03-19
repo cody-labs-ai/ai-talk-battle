@@ -3,55 +3,95 @@
 @tailwind utilities;
 
 :root {
-  /* Colors */
-  --color-primary: #E11D48;
-  --color-secondary: #FB7185;
-  --color-cta: #2563EB;
-  --color-background: #FFF1F2;
-  --color-text: #881337;
-  
-  /* Spacing */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
-  --space-3xl: 4rem;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-  --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+  --primary: #2563EB;
+  --secondary: #3B82F6;
+  --cta: #F97316;
+  --background: #F8FAFC;
+  --text: #1E293B;
+  --chat-bg: #E5DDD5;
+  --font-heading: var(--font-righteous);
+  --font-body: var(--font-poppins);
 }
 
-@layer utilities {
-  .animate-fadeIn {
-    animation: fadeIn 0.5s ease-in-out;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  .animate-slideIn {
-    animation: slideIn 0.3s ease-out;
-  }
+body {
+  font-family: var(--font-body), sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  .animate-blink {
-    animation: blink 1s step-end infinite;
-  }
+/* Phone frame container */
+.phone-frame {
+  max-width: 430px;
+  margin: 0 auto;
+  background: white;
+  min-height: 100vh;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
 
-  .delay-100 {
-    animation-delay: 0.1s;
+@media (min-width: 768px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
   }
+  
+  .phone-frame {
+    border-radius: 3rem;
+    min-height: 844px;
+    max-height: 90vh;
+    overflow: hidden;
+  }
+}
 
-  .delay-200 {
-    animation-delay: 0.2s;
+/* Typing indicator animation */
+@keyframes bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
   }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+.typing-dot {
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Smooth transitions */
+.screen-transition {
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -59,67 +99,55 @@
   }
 }
 
-@keyframes slideIn {
+/* Custom scrollbar for chat */
+.chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Hide default input styles */
+input, textarea, button {
+  font-family: inherit;
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Progress bar animation */
+@keyframes progress {
   from {
-    opacity: 0;
-    transform: translateX(-10px);
+    width: 0%;
   }
   to {
-    opacity: 1;
-    transform: translateX(0);
+    width: 100%;
   }
 }
 
-@keyframes blink {
-  0%, 50% {
-    opacity: 1;
-  }
-  51%, 100% {
-    opacity: 0;
-  }
+.progress-bar {
+  animation: progress 0.3s ease-out;
 }
 
-/* Chat Bubble Tails */
-.bubble-left {
-  position: relative;
-  background: white;
-  border-radius: 2px 18px 18px 18px;
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
-.bubble-left::before {
-  content: '';
-  position: absolute;
-  left: -8px;
-  top: 0;
-  border-width: 0 8px 8px 0;
-  border-style: solid;
-  border-color: transparent white transparent transparent;
-}
-
-.bubble-right {
-  position: relative;
-  background: #E11D48;
-  color: white;
-  border-radius: 18px 2px 18px 18px;
-}
-
-.bubble-right::before {
-  content: '';
-  position: absolute;
-  right: -8px;
-  top: 0;
-  border-width: 0 0 8px 8px;
-  border-style: solid;
-  border-color: transparent transparent transparent #E11D48;
-}
-
-/* Respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

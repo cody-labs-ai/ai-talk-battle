@@ -1,25 +1,32 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Righteous, Poppins } from 'next/font/google';
+import './globals.css';
+
+const righteous = Righteous({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-righteous',
+});
+
+const poppins = Poppins({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+});
 
 export const metadata: Metadata = {
-  title: "AIトークバトル - AI Talk Battle",
-  description: "2体のAIキャラクターが様々なテーマで熱く語り合うエンターテイメントアプリ",
+  title: 'AIトークバトル',
+  description: 'AIキャラクター同士のリアルタイムトークバトル',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="ja">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body style={{ fontFamily: 'Nunito, sans-serif', backgroundColor: '#FFF1F2' }}>
+      <body className={`${righteous.variable} ${poppins.variable} antialiased`}>
         {children}
       </body>
     </html>
