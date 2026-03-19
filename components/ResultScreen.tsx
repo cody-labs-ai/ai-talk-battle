@@ -14,7 +14,7 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
   const getBg = (ch: Character) => BG[characters.findIndex(c => c.id === ch.id) % BG.length];
 
   const handleShare = () => {
-    const text = `🗣️ AIトークバトル\n\n${character1.name} vs ${character2.name}\nモード: ${mode.name}\nお題: ${topic}\n${history.length}メッセージの激闘！\n\nhttps://ai-talk-battle.vercel.app`;
+    const text = `🗣️ AIトークバトル\n\n${character1.name} vs ${character2.name}\nモード: ${mode.name}\nトークテーマ: ${topic}\n${history.length}メッセージの激闘！\n\nhttps://ai-talk-battle.vercel.app`;
     navigator.clipboard.writeText(text).then(() => alert('コピーしました！'));
   };
 
@@ -54,7 +54,7 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
             </div>
           </div>
           <div className="space-y-2 text-center">
-            <p className="text-white/60 text-sm">お題: <span className="text-white font-semibold">{topic}</span></p>
+            <p className="text-white/60 text-sm">トークテーマ: <span className="text-white font-semibold">{topic}</span></p>
             <p className="text-white/60 text-sm">モード: <span className="text-white font-semibold">{mode.name}</span></p>
             <p className="text-white/60 text-sm"><span className="text-white font-semibold">{history.length}</span> メッセージ</p>
           </div>
@@ -73,3 +73,4 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
     </div>
   );
 }
+

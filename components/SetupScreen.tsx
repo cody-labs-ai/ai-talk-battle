@@ -63,7 +63,7 @@ export default function SetupScreen({ onStart }: Props) {
 
         {/* Mode */}
         <div>
-          <h3 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-3">バトルモード</h3>
+          <h3 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-3">会話モード</h3>
           <div className="space-y-2">
             {modes.map((m, i) => { const MIcon = MODE_ICONS[m.id] || Sparkles; const sel = selMode?.id === m.id; return (
               <button key={m.id} onClick={() => setSelMode(m)} className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 cursor-pointer active:scale-[0.98] ${sel ? 'bg-white/15 border border-white/30 shadow-lg shadow-purple-500/10' : 'bg-white/5 border border-transparent hover:bg-white/10'}`}>
@@ -76,7 +76,7 @@ export default function SetupScreen({ onStart }: Props) {
 
         {/* Topic */}
         <div>
-          <h3 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-3">お題</h3>
+          <h3 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-3">トークテーマ</h3>
           <div className="relative">
             <PenLine size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
             <input value={topic} onChange={e => setTopic(e.target.value)} placeholder={PLACEHOLDERS[phIdx]}
@@ -118,3 +118,4 @@ export default function SetupScreen({ onStart }: Props) {
     </div>
   );
 }
+
