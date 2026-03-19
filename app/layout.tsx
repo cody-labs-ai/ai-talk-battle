@@ -1,34 +1,18 @@
 import type { Metadata } from 'next';
-import { Righteous, Poppins } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 
-const righteous = Righteous({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-righteous',
-});
-
-const poppins = Poppins({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-poppins',
-});
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'AIトークバトル',
+  title: 'AI TALK BATTLE',
   description: 'AIキャラクター同士のリアルタイムトークバトル',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body className={`${righteous.variable} ${poppins.variable} antialiased`}>
-        {children}
-      </body>
+      <body className={`${inter.variable} antialiased`}>{children}</body>
     </html>
   );
 }

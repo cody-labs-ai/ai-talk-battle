@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import { Character, Mode } from '@/types';
 import SetupScreen from '@/components/SetupScreen';
@@ -10,64 +9,25 @@ type Screen = 'setup' | 'chat' | 'result';
 
 export default function Home() {
   const [screen, setScreen] = useState<Screen>('setup');
-  const [character1, setCharacter1] = useState<Character | null>(null);
-  const [character2, setCharacter2] = useState<Character | null>(null);
+  const [char1, setChar1] = useState<Character | null>(null);
+  const [char2, setChar2] = useState<Character | null>(null);
   const [mode, setMode] = useState<Mode | null>(null);
   const [topic, setTopic] = useState('');
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
-
-  const handleStartBattle = (
-    char1: Character,
-    char2: Character,
-    selectedMode: Mode,
-    selectedTopic: string
-  ) => {
-    setCharacter1(char1);
-    setCharacter2(char2);
-    setMode(selectedMode);
-    setTopic(selectedTopic);
-    setScreen('chat');
-  };
-
-  const handleBattleComplete = (history: any[]) => {
-    setChatHistory(history);
-    setScreen('result');
-  };
-
-  const handleReset = () => {
-    setScreen('setup');
-    setCharacter1(null);
-    setCharacter2(null);
-    setMode(null);
-    setTopic('');
-    setChatHistory([]);
-  };
+  const [history, setHistory] = useState<any[]>([]);
 
   return (
-    <div className="phone-frame">
-      {screen === 'setup' && (
-        <SetupScreen onStart={handleStartBattle} />
-      )}
-      {screen === 'chat' && character1 && character2 && mode && (
-        <ChatScreen
-          character1={character1}
-          character2={character2}
-          mode={mode}
-          topic={topic}
-          onComplete={handleBattleComplete}
-          onBack={handleReset}
-        />
-      )}
-      {screen === 'result' && character1 && character2 && mode && (
-        <ResultScreen
-          character1={character1}
-          character2={character2}
-          mode={mode}
-          topic={topic}
-          chatHistory={chatHistory}
-          onRestart={handleReset}
-        />
-      )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-950 flex items-center justify-center">
+      <div className="w-full max-w-[430px] min-h-screen md:min-h-0 md:h-[860px] md:rounded-[44px] md:shadow-2xl md:shadow-black/50 overflow-hidden relative bg-black">
+        {screen === 'setup' && (
+          <SetupScreen onStart={(c1, c2, m, t) => { setChar1(c1); setChar2(c2); setMode(m); setTopic(t); setHistory([]); setScreen('chat'); }} />
+        )}
+        {screen === 'chat' && char1 && char2 && mode && (
+          <ChatScreen character1={char1} character2={char2} mode={mode} topic={topic} onComplete={(h) => { setHistory(h); setScreen('result'); }} onBack={() => setScreen('setup')} />
+        )}
+        {screen === 'result' && char1 && char2 && mode && (
+          <ResultScreen character1={char1} character2={char2} mode={mode} topic={topic} history={history} onRestart={() => setScreen('setup')} />
+        )}
+      </div>
     </div>
   );
 }
