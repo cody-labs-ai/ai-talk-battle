@@ -96,6 +96,39 @@ export default function SetupScreen({ onStart }: Props) {
         <h1 className="text-4xl font-black text-white tracking-tight animate-glow">AI TALK BATTLE</h1>
         <p className="text-white/40 text-sm mt-2">{t.setupSubtitle}</p>
         <div className="mt-3 flex justify-center"><LangToggle /></div>
+
+        {/* How it works */}
+        <div className="mt-5 flex items-center justify-center gap-3 text-white/50 text-xs">
+          <div className="flex flex-col items-center gap-1">
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">👤</div>
+            <span>{lang === 'ja' ? 'キャラ選択' : 'Pick 2'}</span>
+          </div>
+          <span className="text-white/20">→</span>
+          <div className="flex flex-col items-center gap-1">
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">💬</div>
+            <span>{lang === 'ja' ? 'テーマ設定' : 'Set Topic'}</span>
+          </div>
+          <span className="text-white/20">→</span>
+          <div className="flex flex-col items-center gap-1">
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">⚔️</div>
+            <span>{lang === 'ja' ? 'バトル観戦' : 'Watch!'}</span>
+          </div>
+        </div>
+
+        {/* Example preview */}
+        <div className="mt-4 bg-white/5 rounded-2xl p-3 mx-auto max-w-[280px] border border-white/10">
+          <p className="text-white/30 text-[10px] mb-2 text-center">{lang === 'ja' ? '💡 例えばこんな会話が見れます' : '💡 Example conversation'}</p>
+          <div className="space-y-1.5">
+            <div className="flex gap-2 items-start">
+              <span className="text-xs">🔥</span>
+              <div className="bg-white/10 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[11px] text-white/60">{lang === 'ja' ? '金で幸せは買えないね' : "Money can't buy happiness"}</div>
+            </div>
+            <div className="flex gap-2 items-start justify-end">
+              <div className="bg-blue-500/20 rounded-xl rounded-tr-sm px-2.5 py-1.5 text-[11px] text-white/60">{lang === 'ja' ? '火星行きのロケット代は？' : 'What about a rocket to Mars?'}</div>
+              <span className="text-xs">❄️</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="flex-1 px-5 pb-5 space-y-6 animate-slideUp">
