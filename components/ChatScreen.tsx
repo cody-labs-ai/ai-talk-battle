@@ -148,7 +148,15 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
                 <div className={`w-10 h-10 rounded-full ${getBg(character2)} flex items-center justify-center text-white`}>{getIcon(character2, 18)}</div>
               </div>
               <p className="text-center text-gray-500 text-xs">{topic} · {messages.length}メッセージ</p>
-              <button onClick={() => { const text = `🗣️ AIトークバトル\n${character1.name} vs ${character2.name}\nテーマ: ${topic}\n${messages.length}メッセージの激闘！\nhttps://ai-talk-battle.vercel.app`; navigator.clipboard.writeText(text).then(() => alert('コピーしました！')); }}
+              <button onClick={() => {
+                const pick1 = messages.filter(m => m.character.id === character1.id).slice(-1)[0];
+                const pick2 = messages.filter(m => m.character.id === character2.id).slice(-1)[0];
+                const q1 = pick1 ? `${character1.name}「${pick1.content.slice(0, 60)}${pick1.content.length > 60 ? '…' : ''}」` : '';
+                const q2 = pick2 ? `${character2.name}「${pick2.content.slice(0, 60)}${pick2.content.length > 60 ? '…' : ''}」` : '';
+                const text = `🗣️ ${character1.name} vs ${character2.name}\nテーマ: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\n#AIトークバトル`;
+                const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+                window.open(xUrl, '_blank');
+              }}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-transform">
                 Xでシェア
               </button>
