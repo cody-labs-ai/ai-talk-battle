@@ -154,7 +154,7 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
               </button>
               <a href="https://buy.stripe.com/eVqeVc5PNfeb7ke6HYcMM02" target="_blank" rel="noopener noreferrer"
                 className="w-full py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-500 font-medium text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.97] transition-all hover:bg-gray-100 block">
-                ☕ 面白かったらコーヒー1杯
+                ☕ コーヒー代をいただけると開発の励みになります
               </a>
               <button onClick={onBack}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-transform">
