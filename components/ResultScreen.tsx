@@ -66,6 +66,9 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
         <button onClick={handleShare} className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 cursor-pointer active:scale-[0.97] transition-transform">
           <Share2 size={18} /> Xでシェア
         </button>
+        <a href="https://buy.stripe.com/8x28wOfqn1nleMGaYecMM00" target="_blank" rel="noopener noreferrer" className="w-full py-3 rounded-2xl bg-white/10 border border-white/20 text-white/80 font-medium text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-all hover:bg-white/15 block">
+          ☕ 面白かったらコーヒー1杯おごってください
+        </a>
         <button onClick={onRestart} className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 cursor-pointer active:scale-[0.97] transition-transform">
           <RotateCcw size={18} /> もう一度バトル
         </button>
