@@ -18,7 +18,7 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
     const pick2 = history.filter((m: any) => m.character?.id === character2.id).slice(-1)[0];
     const q1 = pick1 ? `${character1.name}「${pick1.content?.slice(0, 60)}${pick1.content?.length > 60 ? '…' : ''}」` : '';
     const q2 = pick2 ? `${character2.name}「${pick2.content?.slice(0, 60)}${pick2.content?.length > 60 ? '…' : ''}」` : '';
-    const text = `🗣️ ${character1.name} vs ${character2.name}\nテーマ: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\n#AIトークバトル`;
+    const text = `🗣️ ${character1.name} vs ${character2.name}\nテーマ: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\nby @cody_labs_ai\n#AIトークバトル`;
     const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(xUrl, '_blank');
   };
