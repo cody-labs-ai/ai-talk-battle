@@ -28,7 +28,7 @@ const translations = {
     messages: 'メッセージ',
     battleEnd: '🎉 バトル終了！',
     shareOnX: 'Xでシェア',
-    tipJar: '☕ このサービスは無料でいくらでも遊べます。もし面白かったらコーヒー1杯おごってください！',
+    tipJar: '☕ このサービスは無料でいくらでも遊べます。コーヒー代をいただけますと励みになります',
     playAgain: 'もう一度バトル',
     // Share
     shareTheme: 'テーマ',
