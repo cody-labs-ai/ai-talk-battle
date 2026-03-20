@@ -131,11 +131,11 @@ export default function SetupScreen({ onStart }: Props) {
           <div className="space-y-1.5">
             <div className="flex gap-2 items-start">
               <span className="text-xs">🔥</span>
-              <div className="bg-white/10 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[11px] text-white/60">{lang === 'ja' ? '金で幸せは買えないね' : "Money can't buy happiness"}</div>
+              <div className="bg-white/10 rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[11px] text-white/60">{lang === 'ja' ? 'AIに心なんてないだろ！' : "AI will never have a soul!"}</div>
             </div>
             <div className="flex gap-2 items-start justify-end">
-              <div className="bg-blue-500/20 rounded-xl rounded-tr-sm px-2.5 py-1.5 text-[11px] text-white/60">{lang === 'ja' ? '火星行きのロケット代は？' : 'What about a rocket to Mars?'}</div>
-              <span className="text-xs">❄️</span>
+              <div className="bg-blue-500/20 rounded-xl rounded-tr-sm px-2.5 py-1.5 text-[11px] text-white/60">{lang === 'ja' ? 'じゃあ心って何？定義してみて？' : "Then define 'soul' for me. I'll wait."}</div>
+              <span className="text-xs">🤖</span>
             </div>
           </div>
         </div>
