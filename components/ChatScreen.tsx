@@ -26,7 +26,7 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
 
   useEffect(() => {
     if (fetchingRef.current) return;
-    if (messages.length >= MAX_ROUNDS * 2) { onComplete(messages); return; }
+    if (messages.length >= MAX_ROUNDS * 2) { setTimeout(() => onComplete(messages), 3000); return; }
     fetchingRef.current = true;
     const speaker = messages.length % 2 === 0 ? character1 : character2;
     const round = Math.floor(messages.length / 2) + 1;
