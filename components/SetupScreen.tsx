@@ -151,6 +151,14 @@ export default function SetupScreen({ onStart }: Props) {
           </div>
         </div>
       )}
+
+      {/* Custom Character Modal */}
+      {customModal && (
+        <CustomCharModal
+          onSave={(ch) => { customModal === 1 ? setC1(ch) : setC2(ch); setCustomModal(null); }}
+          onClose={() => setCustomModal(null)}
+        />
+      )}
     </div>
   );
 }
