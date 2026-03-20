@@ -36,4 +36,11 @@ export const modes: Mode[] = [
     description: 'Love advice - give opposite advice',
     rules: '恋愛相談モード。二人は正反対のアドバイスをします。一人は積極的に攻める派、もう一人は慎重に待つ派。相談者（架空）を想定して助言します。',
   },
+  {
+    id: 'pro-brainstorm',
+    emoji: '🧠',
+    name: 'ビジネス壁打ち Pro',
+    description: '高性能AI（Claude Opus）による深い議論・壁打ち',
+    rules: 'ビジネスアイデアの壁打ちモード。相手のアイデアを深く分析し、鋭い質問、リスク指摘、改善提案を行う。表面的な同意はしない。投資家・経営者の視点で本質を突く。',
+  },
 ];

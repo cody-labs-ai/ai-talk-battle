@@ -57,38 +57,52 @@ ${conversationHistory || '(まだ会話は始まっていません)'}
       });
     }
 
-    // Use non-streaming endpoint for reliability
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
+    // Check if pro mode (use Anthropic Claude)
+    const isPro = mode.id === 'pro-brainstorm';
+    let text = '';
+
+    if (isPro && process.env.ANTHROPIC_API_KEY) {
+      const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+        },
         body: JSON.stringify({
-          contents: [
-            {
-              role: 'user',
-              parts: [{ text: systemPrompt + '\n\n' + userPrompt }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.9,
-            maxOutputTokens: 300,
-          },
+          model: 'claude-sonnet-4-5-20250514',
+          max_tokens: 500,
+          messages: [{ role: 'user', content: systemPrompt + '\n\n' + userPrompt }],
         }),
-      }
-    );
-
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('Gemini API error:', error);
-      return new Response(JSON.stringify({ error: 'Gemini API failed: ' + response.status }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
       });
+      if (!anthropicRes.ok) {
+        const err = await anthropicRes.text();
+        console.error('Anthropic API error:', err);
+        return new Response(JSON.stringify({ error: 'Pro API failed' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+      }
+      const anthropicData = await anthropicRes.json();
+      text = anthropicData?.content?.[0]?.text || '';
+    } else {
+      // Use Gemini Flash (free)
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }],
+            generationConfig: { temperature: 0.9, maxOutputTokens: 300 },
+          }),
+        }
+      );
+      if (!response.ok) {
+        const error = await response.text();
+        console.error('Gemini API error:', error);
+        return new Response(JSON.stringify({ error: 'Gemini API failed: ' + response.status }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+      }
+      const data = await response.json();
+      text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
-
-    const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     // Simulate streaming by sending chars one by one
     const encoder = new TextEncoder();

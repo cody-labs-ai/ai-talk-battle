@@ -6,7 +6,9 @@ import { modes } from '@/data/modes';
 import { Flame, Snowflake, Users, Crown, Bot, Briefcase, Theater, Scale, Swords, GraduationCap, Lightbulb, Laugh, Heart, X as XIcon, PenLine, Sparkles } from 'lucide-react';
 
 const ICONS: Record<string, any> = { Flame, Snowflake, Users, Crown, Bot, Briefcase, Theater, Scale };
-const MODE_ICONS: Record<string, any> = { 'heated-argument': Flame, 'serious-debate': GraduationCap, 'business-brainstorm': Lightbulb, 'comedy-duo': Laugh, 'love-advice': Heart };
+const MODE_ICONS: Record<string, any> = { 'heated-argument': Flame, 'serious-debate': GraduationCap, 'business-brainstorm': Lightbulb, 'comedy-duo': Laugh, 'love-advice': Heart, 'pro-brainstorm': Sparkles };
+const PRO_MODES = new Set(['pro-brainstorm']);
+const PRO_PAYMENT_URL = 'https://buy.stripe.com/dRmaEW1zx0jh9smaYecMM01';
 const COLORS = ['from-red-500 to-rose-600', 'from-blue-500 to-cyan-600', 'from-amber-500 to-orange-600', 'from-purple-500 to-violet-600', 'from-slate-500 to-gray-600', 'from-emerald-500 to-teal-600', 'from-pink-500 to-fuchsia-600', 'from-orange-500 to-amber-600'];
 const BG_COLORS = ['bg-red-500', 'bg-blue-500', 'bg-amber-500', 'bg-purple-500', 'bg-slate-500', 'bg-emerald-500', 'bg-pink-500', 'bg-orange-500'];
 const PLACEHOLDERS = ['きのこの山 vs たけのこの里', 'AIは人間を超えるか', '猫派 vs 犬派', '朝型 vs 夜型', 'リモート vs 出社'];
@@ -96,10 +98,16 @@ export default function SetupScreen({ onStart }: Props) {
         <div>
           <h3 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-3">会話モード</h3>
           <div className="space-y-2">
-            {modes.map((m, i) => { const MIcon = MODE_ICONS[m.id] || Sparkles; const sel = selMode?.id === m.id; return (
-              <button key={m.id} onClick={() => setSelMode(m)} className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 cursor-pointer active:scale-[0.98] ${sel ? 'bg-white/15 border border-white/30 shadow-lg shadow-purple-500/10' : 'bg-white/5 border border-transparent hover:bg-white/10'}`}>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${sel ? 'bg-white/20 text-white' : 'bg-white/10 text-white/50'}`}><MIcon size={20} /></div>
-                <div className="text-left flex-1"><div className={`font-bold text-sm ${sel ? 'text-white' : 'text-white/70'}`}>{m.name}</div><div className="text-white/30 text-[11px] mt-0.5">{m.description}</div></div>
+            {modes.map((m, i) => { const MIcon = MODE_ICONS[m.id] || Sparkles; const sel = selMode?.id === m.id; const isPro = PRO_MODES.has(m.id); const isUnlocked = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pro') === 'true'; return (
+              <button key={m.id} onClick={() => { if (isPro && !isUnlocked) { window.location.href = PRO_PAYMENT_URL; } else { setSelMode(m); } }} className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 cursor-pointer active:scale-[0.98] ${sel ? 'bg-white/15 border border-white/30 shadow-lg shadow-purple-500/10' : isPro ? 'bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 hover:border-amber-500/50' : 'bg-white/5 border border-transparent hover:bg-white/10'}`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${sel ? 'bg-white/20 text-white' : isPro ? 'bg-amber-500/20 text-amber-400' : 'bg-white/10 text-white/50'}`}><MIcon size={20} /></div>
+                <div className="text-left flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`font-bold text-sm ${sel ? 'text-white' : isPro ? 'text-amber-300' : 'text-white/70'}`}>{m.name}</span>
+                    {isPro && <span className="text-[9px] font-bold bg-amber-500 text-black px-1.5 py-0.5 rounded-full">$1</span>}
+                  </div>
+                  <div className={`text-[11px] mt-0.5 ${isPro ? 'text-amber-300/50' : 'text-white/30'}`}>{m.description}</div>
+                </div>
               </button>
             ); })}
           </div>
