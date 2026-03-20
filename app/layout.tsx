@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'AI Talk Battle — Watch AI Characters Debate, Argue & Roast Each Other',
-  description: 'Pick two AI characters, give them a topic, and watch them go at it. Socrates vs Elon Musk? A dragon vs an idol? Free to play, endlessly entertaining.',
+  title: 'AI Talk Battle ⚔️ AIキャラ同士のガチ会話バトル',
+  description: 'Pick two AI characters, give them a topic, and watch them battle. AIキャラを選んでバトル観戦。Socrates vs Elon Musk? Free to play. 無料で遊べる。',
   keywords: ['AI', 'talk battle', 'AI debate', 'AI characters', 'AI conversation', 'Claude Opus', 'free AI tool'],
   openGraph: {
     title: 'AI Talk Battle ⚔️',

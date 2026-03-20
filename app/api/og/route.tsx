@@ -2,7 +2,8 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export async function GET() {
+export async function GET(req: Request) {
+  const lang = req.headers.get('accept-language')?.startsWith('ja') ? 'ja' : 'en';
   return new ImageResponse(
     (
       <div
@@ -28,10 +29,10 @@ export async function GET() {
           AI TALK BATTLE
         </div>
         <div style={{ fontSize: '24px', color: 'rgba(255,255,255,0.6)', maxWidth: '600px', textAlign: 'center', lineHeight: 1.4, display: 'flex' }}>
-          Pick two AI characters. Give them a topic. Watch them battle it out.
+          {lang === 'ja' ? 'AIキャラを選んで、テーマを決めて、バトルを観戦しよう' : 'Pick two AI characters. Give them a topic. Watch them battle it out.'}
         </div>
         <div style={{ marginTop: '32px', padding: '12px 32px', borderRadius: '999px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.8)', fontSize: '18px', display: 'flex' }}>
-          ⚔️ Free to play
+          {lang === 'ja' ? '⚔️ 無料で遊べる' : '⚔️ Free to play'}
         </div>
       </div>
     ),
