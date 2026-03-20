@@ -2,11 +2,13 @@ import { Character, Mode, Message } from '@/types';
 
 export const runtime = 'edge';
 
-// Rate limiter: per-minute burst + daily cap per IP
+// Rate limiter: per-minute burst + daily cap per IP + global daily cap
 const minuteMap = new Map<string, { count: number; resetAt: number }>();
 const dailyMap = new Map<string, { count: number; resetAt: number }>();
-const MINUTE_LIMIT = 30;  // max 30 req/min (3 battles worth)
-const DAILY_LIMIT = 500;  // max 500 req/day (~25 full battles)
+const MINUTE_LIMIT = 30;  // max 30 req/min per IP
+const DAILY_LIMIT = 500;  // max 500 req/day per IP
+const GLOBAL_DAILY_LIMIT = 5000; // max 5000 req/day total (~$10/day max)
+let globalDaily = { count: 0, resetAt: Date.now() + 86_400_000 };
 
 function checkRateLimit(ip: string): { ok: boolean; reason?: string } {
   const now = Date.now();
@@ -27,6 +29,14 @@ function checkRateLimit(ip: string): { ok: boolean; reason?: string } {
   } else {
     if (dEntry.count >= DAILY_LIMIT) return { ok: false, reason: 'Daily limit reached. Come back tomorrow!' };
     dEntry.count++;
+  }
+
+  // Global daily check
+  if (now > globalDaily.resetAt) {
+    globalDaily = { count: 1, resetAt: now + 86_400_000 };
+  } else {
+    if (globalDaily.count >= GLOBAL_DAILY_LIMIT) return { ok: false, reason: 'Service is at capacity for today. Please come back tomorrow!' };
+    globalDaily.count++;
   }
 
   return { ok: true };
