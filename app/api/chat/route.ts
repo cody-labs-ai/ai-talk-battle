@@ -2,6 +2,20 @@ import { Character, Mode, Message } from '@/types';
 
 export const runtime = 'edge';
 
+// Simple in-memory rate limiter (per IP, 60 requests per minute)
+const rateMap = new Map<string, { count: number; resetAt: number }>();
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateMap.set(ip, { count: 1, resetAt: now + 60_000 });
+    return true;
+  }
+  if (entry.count >= 60) return false;
+  entry.count++;
+  return true;
+}
+
 interface RequestBody {
   character1: Character;
   character2: Character;
@@ -13,8 +27,19 @@ interface RequestBody {
 
 export async function POST(req: Request) {
   try {
+    // Rate limiting
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
+    if (!checkRateLimit(ip)) {
+      return new Response(JSON.stringify({ error: 'Too many requests. Please wait a moment.' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const body: RequestBody = await req.json();
-    const { character1, character2, mode, topic, history, currentSpeaker } = body;
+    const { character1, character2, mode, history, currentSpeaker } = body;
+    // Sanitize topic: limit length and strip control characters
+    const topic = (body.topic || '').slice(0, 200).replace(/[\x00-\x1f]/g, '');
 
     const opponent = currentSpeaker.id === character1.id ? character2 : character1;
 
@@ -133,7 +158,7 @@ ${conversationHistory || '(まだ会話は始まっていません)'}
   } catch (error) {
     console.error('Error in chat API:', error);
     const msg = error instanceof Error ? error.message : String(error);
-    return new Response(JSON.stringify({ error: 'Error: ' + msg, hasKey: !!process.env.GEMINI_API_KEY, keyPrefix: (process.env.GEMINI_API_KEY || '').substring(0, 10) }), {
+    return new Response(JSON.stringify({ error: 'Something went wrong. Please try again.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
