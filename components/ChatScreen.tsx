@@ -22,11 +22,12 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
   const getIcon = (ch: Character, size = 20) => { const I = ICONS[ch.iconName || 'Users'] || Users; return <I size={size} />; };
   const getBg = (ch: Character) => BG[characters.findIndex(c => c.id === ch.id) % BG.length];
 
-  useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }); }, [messages, streaming]);
+  // Only auto-scroll when a NEW message is being typed (streaming), not when reading back
+  useEffect(() => { if (isTyping) { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }); } }, [streaming, isTyping]);
 
   useEffect(() => {
     if (fetchingRef.current) return;
-    if (messages.length >= MAX_ROUNDS * 2) { setTimeout(() => onComplete(messages), 3000); return; }
+    if (messages.length >= MAX_ROUNDS * 2) { return; }
     fetchingRef.current = true;
     const speaker = messages.length % 2 === 0 ? character1 : character2;
     const round = Math.floor(messages.length / 2) + 1;
@@ -132,15 +133,36 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
             </div>
           </div>
         )}
-      </div>
 
-      {/* Progress */}
-      <div className="bg-white border-t border-gray-100 px-5 py-3">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[11px] font-semibold text-gray-400">ラウンド {currentRound}/{MAX_ROUNDS}</span>
-          <span className="text-[11px] text-gray-300">{messages.length}/{MAX_ROUNDS * 2} メッセージ</span>
-        </div>
-        <div className="h-1 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-500" style={{ width: `${(messages.length / (MAX_ROUNDS * 2)) * 100}%` }} /></div>
+        {/* End section - inline in chat */}
+        {messages.length >= MAX_ROUNDS * 2 && !isTyping && (
+          <div className="mt-6 mb-4 animate-fadeIn">
+            <div className="text-center mb-4">
+              <span className="text-2xl">🎉</span>
+              <p className="text-gray-500 font-semibold text-sm mt-1">バトル終了！</p>
+            </div>
+            <div className="bg-white rounded-2xl shadow-md p-4 space-y-3">
+              <div className="flex items-center justify-center gap-3">
+                <div className={`w-10 h-10 rounded-full ${getBg(character1)} flex items-center justify-center text-white`}>{getIcon(character1, 18)}</div>
+                <span className="text-xs font-bold text-gray-400">VS</span>
+                <div className={`w-10 h-10 rounded-full ${getBg(character2)} flex items-center justify-center text-white`}>{getIcon(character2, 18)}</div>
+              </div>
+              <p className="text-center text-gray-500 text-xs">{topic} · {messages.length}メッセージ</p>
+              <button onClick={() => { const text = `🗣️ AIトークバトル\n${character1.name} vs ${character2.name}\nテーマ: ${topic}\n${messages.length}メッセージの激闘！\nhttps://ai-talk-battle.vercel.app`; navigator.clipboard.writeText(text).then(() => alert('コピーしました！')); }}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-transform">
+                Xでシェア
+              </button>
+              <a href="https://buy.stripe.com/eVqeVc5PNfeb7ke6HYcMM02" target="_blank" rel="noopener noreferrer"
+                className="w-full py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-500 font-medium text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.97] transition-all hover:bg-gray-100 block">
+                ☕ 面白かったらコーヒー1杯
+              </a>
+              <button onClick={onBack}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-transform">
+                もう一度バトル
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
