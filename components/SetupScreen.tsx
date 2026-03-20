@@ -32,11 +32,11 @@ function CustomCharModal({ onSave, onClose }: { onSave: (c: Character) => void; 
             <input value={name} onChange={e => setName(e.target.value)} placeholder="例：ツンデレ幼馴染" className="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none" />
           </div>
           <div>
-            <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-1 block">性格・口調の設定</label>
-            <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="例：ツンデレで素直になれない。「べ、別にあんたのためじゃないんだからね！」が口癖。" rows={3} className="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none resize-none" />
+            <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-1 block">性格・口調の設定 <span className="text-white/30 font-normal normal-case">（任意）</span></label>
+            <textarea value={desc} onChange={e => setDesc(e.target.value)} placeholder="空欄なら名前から自動で性格を推測します" rows={3} className="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none resize-none" />
           </div>
-          <button disabled={!name.trim() || !desc.trim()} onClick={() => { onSave({ id: 'custom-' + Date.now(), emoji: '✨', iconName: 'Sparkles', name: name.trim(), description: name.trim(), systemPrompt: desc.trim() }); }}
-            className={`w-full py-3.5 rounded-xl font-bold transition-all cursor-pointer active:scale-[0.97] ${name.trim() && desc.trim() ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white' : 'bg-white/10 text-white/20 cursor-not-allowed'}`}>
+          <button disabled={!name.trim()} onClick={() => { onSave({ id: 'custom-' + Date.now(), emoji: '✨', iconName: 'Sparkles', name: name.trim(), description: name.trim(), systemPrompt: desc.trim() || `あなたは${name.trim()}です。${name.trim()}として自然に振る舞い、その人物らしい口調と考え方で会話してください。` }); }}
+            className={`w-full py-3.5 rounded-xl font-bold transition-all cursor-pointer active:scale-[0.97] ${name.trim() ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white' : 'bg-white/10 text-white/20 cursor-not-allowed'}`}>
             作成
           </button>
         </div>
