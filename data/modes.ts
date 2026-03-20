@@ -40,7 +40,7 @@ export const modes: Mode[] = [
     id: 'pro-brainstorm',
     emoji: '🧠',
     name: 'ビジネス壁打ち Pro',
-    description: '高性能AI（Claude）による深い議論・壁打ち',
+    description: '最高性能AI（Claude Opus）による深い議論・壁打ち',
     rules: 'ビジネスアイデアの壁打ちモード。相手のアイデアを深く分析し、鋭い質問、リスク指摘、改善提案を行う。表面的な同意はしない。投資家・経営者の視点で本質を突く。',
   },
 ];

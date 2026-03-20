@@ -22,7 +22,7 @@ const translations = {
     charPersonalityPlaceholder: '空欄なら名前から自動で性格を推測します',
     create: '作成',
     proBrainstorm: 'ビジネス壁打ち Pro',
-    proBrainstormDesc: '高性能AI（Claude）による深い議論・壁打ち',
+    proBrainstormDesc: '最高性能AI（Claude Opus）による深い議論・壁打ち',
     // Chat
     round: 'ラウンド',
     messages: 'メッセージ',
@@ -74,7 +74,7 @@ const translations = {
     charPersonalityPlaceholder: 'Leave blank to auto-detect from name',
     create: 'Create',
     proBrainstorm: 'Business Brainstorm Pro',
-    proBrainstormDesc: 'Deep discussion powered by Claude AI',
+    proBrainstormDesc: 'Deep discussion powered by Claude Opus',
     round: 'Round',
     messages: 'messages',
     battleEnd: '🎉 Battle Complete!',

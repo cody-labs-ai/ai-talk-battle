@@ -156,7 +156,7 @@ ${conversationHistory || '(まだ会話は始まっていません)'}
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-5-20250514',
+          model: 'claude-opus-4-0-20250514',
           max_tokens: 500,
           messages: [{ role: 'user', content: systemPrompt + '\n\n' + userPrompt }],
         }),
