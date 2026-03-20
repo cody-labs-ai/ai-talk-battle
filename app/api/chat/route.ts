@@ -45,6 +45,9 @@ function checkRateLimit(ip: string): { ok: boolean; reason?: string } {
 
 // Cleanup runs inline on each request (stale entries removed in checkRateLimit)
 
+import { trackRequest } from '@/lib/stats';
+
+
 interface RequestBody {
   character1: Character;
   character2: Character;
@@ -92,6 +95,7 @@ export async function POST(req: Request) {
 
     const body: RequestBody = await req.json();
     const { character1, character2, mode, history, currentSpeaker } = body;
+    trackRequest(ip, history.length === 0);
     // Sanitize topic: limit length and strip control characters
     const topic = (body.topic || '').slice(0, 200).replace(/[\x00-\x1f]/g, '');
 
