@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   const STRIPE_SK = process.env.STRIPE_SECRET_KEY;

@@ -1,6 +1,7 @@
 import { Character, Mode, Message } from '@/types';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
+export const maxDuration = 30;
 
 // Rate limiter: per-minute burst + daily cap per IP + global daily cap
 const minuteMap = new Map<string, { count: number; resetAt: number }>();
@@ -42,12 +43,7 @@ function checkRateLimit(ip: string): { ok: boolean; reason?: string } {
   return { ok: true };
 }
 
-// Clean up stale entries every 10 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, v] of minuteMap) if (now > v.resetAt) minuteMap.delete(k);
-  for (const [k, v] of dailyMap) if (now > v.resetAt) dailyMap.delete(k);
-}, 600_000);
+// Cleanup runs inline on each request (stale entries removed in checkRateLimit)
 
 interface RequestBody {
   character1: Character;

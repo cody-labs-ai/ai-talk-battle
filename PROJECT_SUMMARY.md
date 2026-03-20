@@ -155,7 +155,7 @@ vercel --prod
 
 Already set in `.env.local`:
 ```
-GEMINI_API_KEY=AIzaSyALYbTnukYRmnI-7c21U9bAT5AtHlvqsPE
+GEMINI_API_KEY=<set in .env.local and Vercel>
 ```
 
 ## 🎉 Summary
