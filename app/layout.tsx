@@ -6,8 +6,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'AI Talk Battle ⚔️ AIキャラ同士のガチ会話バトル',
-  description: 'Pick two AI characters, give them a topic, and watch them battle. AIキャラを選んでバトル観戦。Socrates vs Elon Musk? Free to play. 無料で遊べる。',
-  keywords: ['AI', 'talk battle', 'AI debate', 'AI characters', 'AI conversation', 'Claude Opus', 'free AI tool'],
+  description: 'Pick two AI characters, give them a topic, and watch them battle. AIキャラを選んでバトル観戦。Free to play. 無料で遊べる。',
+  keywords: ['AI', 'talk battle', 'AI debate', 'AI characters', 'Claude Opus', 'free AI tool', 'AIトークバトル'],
+  alternates: {
+    languages: { 'ja': '/?lang=ja', 'en': '/?lang=en' },
+  },
   openGraph: {
     title: 'AI Talk Battle ⚔️',
     description: 'Pick two AI characters. Give them a topic. Watch them battle it out. Free & addictive.',
@@ -15,6 +18,7 @@ export const metadata: Metadata = {
     siteName: 'AI Talk Battle',
     type: 'website',
     locale: 'en_US',
+    alternateLocale: 'ja_JP',
     images: [{ url: 'https://ai-talk-battle.vercel.app/api/og', width: 1200, height: 630, alt: 'AI Talk Battle' }],
   },
   twitter: {

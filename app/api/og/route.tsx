@@ -3,7 +3,9 @@ import { ImageResponse } from 'next/og';
 export const runtime = 'edge';
 
 export async function GET(req: Request) {
-  const lang = req.headers.get('accept-language')?.startsWith('ja') ? 'ja' : 'en';
+  const url = new URL(req.url);
+  const paramLang = url.searchParams.get('lang');
+  const lang = paramLang === 'ja' ? 'ja' : paramLang === 'en' ? 'en' : (req.headers.get('accept-language')?.startsWith('ja') ? 'ja' : 'en');
   return new ImageResponse(
     (
       <div

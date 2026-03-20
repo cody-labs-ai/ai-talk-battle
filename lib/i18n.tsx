@@ -120,11 +120,18 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('ja');
 
   useEffect(() => {
-    const saved = localStorage.getItem('lang') as Lang;
-    if (saved && (saved === 'ja' || saved === 'en')) {
-      setLangState(saved);
-    } else if (typeof navigator !== 'undefined' && !navigator.language.startsWith('ja')) {
-      setLangState('en');
+    // Priority: URL param > localStorage > browser language
+    const urlLang = new URLSearchParams(window.location.search).get('lang') as Lang;
+    if (urlLang === 'ja' || urlLang === 'en') {
+      setLangState(urlLang);
+      localStorage.setItem('lang', urlLang);
+    } else {
+      const saved = localStorage.getItem('lang') as Lang;
+      if (saved && (saved === 'ja' || saved === 'en')) {
+        setLangState(saved);
+      } else if (!navigator.language.startsWith('ja')) {
+        setLangState('en');
+      }
     }
   }, []);
 
