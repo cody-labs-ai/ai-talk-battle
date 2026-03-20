@@ -2,19 +2,42 @@ import { Character, Mode, Message } from '@/types';
 
 export const runtime = 'edge';
 
-// Simple in-memory rate limiter (per IP, 60 requests per minute)
-const rateMap = new Map<string, { count: number; resetAt: number }>();
-function checkRateLimit(ip: string): boolean {
+// Rate limiter: per-minute burst + daily cap per IP
+const minuteMap = new Map<string, { count: number; resetAt: number }>();
+const dailyMap = new Map<string, { count: number; resetAt: number }>();
+const MINUTE_LIMIT = 30;  // max 30 req/min (3 battles worth)
+const DAILY_LIMIT = 500;  // max 500 req/day (~25 full battles)
+
+function checkRateLimit(ip: string): { ok: boolean; reason?: string } {
   const now = Date.now();
-  const entry = rateMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + 60_000 });
-    return true;
+
+  // Minute check
+  const mEntry = minuteMap.get(ip);
+  if (!mEntry || now > mEntry.resetAt) {
+    minuteMap.set(ip, { count: 1, resetAt: now + 60_000 });
+  } else {
+    if (mEntry.count >= MINUTE_LIMIT) return { ok: false, reason: 'Too many requests. Please wait a moment.' };
+    mEntry.count++;
   }
-  if (entry.count >= 60) return false;
-  entry.count++;
-  return true;
+
+  // Daily check
+  const dEntry = dailyMap.get(ip);
+  if (!dEntry || now > dEntry.resetAt) {
+    dailyMap.set(ip, { count: 1, resetAt: now + 86_400_000 });
+  } else {
+    if (dEntry.count >= DAILY_LIMIT) return { ok: false, reason: 'Daily limit reached. Come back tomorrow!' };
+    dEntry.count++;
+  }
+
+  return { ok: true };
 }
+
+// Clean up stale entries every 10 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of minuteMap) if (now > v.resetAt) minuteMap.delete(k);
+  for (const [k, v] of dailyMap) if (now > v.resetAt) dailyMap.delete(k);
+}, 600_000);
 
 interface RequestBody {
   character1: Character;
@@ -29,8 +52,9 @@ export async function POST(req: Request) {
   try {
     // Rate limiting
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
-    if (!checkRateLimit(ip)) {
-      return new Response(JSON.stringify({ error: 'Too many requests. Please wait a moment.' }), {
+    const rateCheck = checkRateLimit(ip);
+    if (!rateCheck.ok) {
+      return new Response(JSON.stringify({ error: rateCheck.reason }), {
         status: 429,
         headers: { 'Content-Type': 'application/json' },
       });
