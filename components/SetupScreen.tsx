@@ -197,6 +197,12 @@ export default function SetupScreen({ onStart }: Props) {
               <button onClick={() => setModal(null)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center cursor-pointer"><XIcon size={16} className="text-white/60" /></button>
             </div>
             <div className="grid grid-cols-2 gap-3">
+              <button onClick={() => { setCustomModal(modal); setModal(null); }}
+                className="bg-gradient-to-br from-purple-500/30 to-indigo-500/30 border-2 border-dashed border-purple-400/40 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all hover:border-purple-400/60">
+                <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center text-purple-300"><Sparkles size={32} /></div>
+                <span className="text-purple-300 font-bold text-sm">{t.customCreate}</span>
+                <span className="text-purple-300/50 text-[10px]">{lang === 'ja' ? '好きな人物を作ろう' : 'Create anyone you want'}</span>
+              </button>
               {characters.map((ch, i) => (
                 <button key={ch.id} onClick={() => { modal === 1 ? setC1(ch) : setC2(ch); setModal(null); }}
                   className={`bg-gradient-to-br ${COLORS[i % COLORS.length]} p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer active:scale-95 transition-all`}>
@@ -205,11 +211,6 @@ export default function SetupScreen({ onStart }: Props) {
                   <span className="text-white/60 text-[10px]">{CHAR_I18N[ch.id] ? (t as any)[CHAR_I18N[ch.id][1]] : ch.description}</span>
                 </button>
               ))}
-              <button onClick={() => { setCustomModal(modal); setModal(null); }}
-                className="bg-white/5 border-2 border-dashed border-white/20 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all hover:border-white/40">
-                <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center text-white/40"><Sparkles size={32} /></div>
-                <span className="text-white/60 font-bold text-sm">{t.customCreate}</span>
-              </button>
             </div>
           </div>
         </div>
