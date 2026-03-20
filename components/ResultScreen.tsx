@@ -1,6 +1,7 @@
 'use client';
 import { Character, Mode } from '@/types';
 import { Share2, RotateCcw, Flame, Snowflake, Users, Crown, Bot, Briefcase, Theater, Scale, Trophy } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 import { characters } from '@/data/characters';
 
 const ICONS: Record<string, any> = { Flame, Snowflake, Users, Crown, Bot, Briefcase, Theater, Scale };
@@ -10,6 +11,7 @@ const CONFETTI = ['#FF6B6B','#4ECDC4','#FFE66D','#A78BFA','#F97316','#3B82F6','#
 interface Props { character1: Character; character2: Character; mode: Mode; topic: string; history: any[]; onRestart: () => void; }
 
 export default function ResultScreen({ character1, character2, mode, topic, history, onRestart }: Props) {
+  const { t, lang } = useI18n();
   const getIcon = (ch: Character, size = 24) => { const I = ICONS[ch.iconName || 'Users'] || Users; return <I size={size} />; };
   const getBg = (ch: Character) => BG[characters.findIndex(c => c.id === ch.id) % BG.length];
 
@@ -18,7 +20,9 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
     const pick2 = history.filter((m: any) => m.character?.id === character2.id).slice(-1)[0];
     const q1 = pick1 ? `${character1.name}「${pick1.content?.slice(0, 60)}${pick1.content?.length > 60 ? '…' : ''}」` : '';
     const q2 = pick2 ? `${character2.name}「${pick2.content?.slice(0, 60)}${pick2.content?.length > 60 ? '…' : ''}」` : '';
-    const text = `🗣️ ${character1.name} vs ${character2.name}\nテーマ: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\nby @cody_labs_ai\n#AIトークバトル`;
+    const text = lang === 'ja'
+      ? `🗣️ ${character1.name} vs ${character2.name}\nテーマ: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\nby @cody_labs_ai\n#AIトークバトル`
+      : `🗣️ ${character1.name} vs ${character2.name}\nTopic: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\nby @cody_labs_ai\n#AITalkBattle`;
     const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(xUrl, '_blank');
   };
@@ -59,9 +63,9 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
             </div>
           </div>
           <div className="space-y-2 text-center">
-            <p className="text-white/60 text-sm">トークテーマ: <span className="text-white font-semibold">{topic}</span></p>
-            <p className="text-white/60 text-sm">モード: <span className="text-white font-semibold">{mode.name}</span></p>
-            <p className="text-white/60 text-sm"><span className="text-white font-semibold">{history.length}</span> メッセージ</p>
+            <p className="text-white/60 text-sm">{t.talkTheme}: <span className="text-white font-semibold">{topic}</span></p>
+            <p className="text-white/60 text-sm">{t.mode}: <span className="text-white font-semibold">{mode.name}</span></p>
+            <p className="text-white/60 text-sm"><span className="text-white font-semibold">{history.length}</span> {t.messages}</p>
           </div>
         </div>
       </div>
@@ -69,13 +73,13 @@ export default function ResultScreen({ character1, character2, mode, topic, hist
       {/* Buttons */}
       <div className="p-5 space-y-3 relative z-10">
         <button onClick={handleShare} className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 cursor-pointer active:scale-[0.97] transition-transform">
-          <Share2 size={18} /> Xでシェア
+          <Share2 size={18} /> {t.shareOnX}
         </button>
         <a href="https://buy.stripe.com/eVqeVc5PNfeb7ke6HYcMM02" target="_blank" rel="noopener noreferrer" className="w-full py-3 rounded-2xl bg-white/10 border border-white/20 text-white/80 font-medium text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-all hover:bg-white/15 block">
-          ☕ コーヒー代をいただけると開発の励みになります
+          {t.tipJar}
         </a>
         <button onClick={onRestart} className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 cursor-pointer active:scale-[0.97] transition-transform">
-          <RotateCcw size={18} /> もう一度バトル
+          <RotateCcw size={18} /> {t.playAgain}
         </button>
       </div>
     </div>

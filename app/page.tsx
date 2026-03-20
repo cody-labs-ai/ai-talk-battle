@@ -4,6 +4,7 @@ import { Character, Mode } from '@/types';
 import SetupScreen from '@/components/SetupScreen';
 import ChatScreen from '@/components/ChatScreen';
 import ResultScreen from '@/components/ResultScreen';
+import { I18nProvider } from '@/lib/i18n';
 
 type Screen = 'setup' | 'chat' | 'result';
 
@@ -16,6 +17,7 @@ export default function Home() {
   const [history, setHistory] = useState<any[]>([]);
 
   return (
+    <I18nProvider>
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-950 flex items-center justify-center">
       <div className="w-full max-w-[430px] min-h-screen md:min-h-0 md:h-[860px] md:rounded-[44px] md:shadow-2xl md:shadow-black/50 overflow-hidden relative bg-black">
         {screen === 'setup' && (
@@ -29,5 +31,6 @@ export default function Home() {
         )}
       </div>
     </div>
+    </I18nProvider>
   );
 }

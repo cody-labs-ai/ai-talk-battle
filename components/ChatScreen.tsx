@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Character, Mode, Message } from '@/types';
 import { ArrowLeft, Flame, Snowflake, Users, Crown, Bot, Briefcase, Theater, Scale } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 
 const ICONS: Record<string, any> = { Flame, Snowflake, Users, Crown, Bot, Briefcase, Theater, Scale };
 const BG = ['bg-red-500','bg-blue-500','bg-amber-500','bg-purple-500','bg-slate-500','bg-emerald-500','bg-pink-500','bg-orange-500'];
@@ -12,6 +13,7 @@ const MAX_ROUNDS = 10;
 interface Props { character1: Character; character2: Character; mode: Mode; topic: string; onComplete: (h: any[]) => void; onBack: () => void; }
 
 export default function ChatScreen({ character1, character2, mode, topic, onComplete, onBack }: Props) {
+  const { t, lang } = useI18n();
   const [messages, setMessages] = useState<{ character: Character; content: string; round: number }[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [streaming, setStreaming] = useState('');
@@ -97,7 +99,7 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
                 <div className={`px-4 py-2.5 text-[15px] leading-relaxed ${left ? 'bg-white rounded-[20px] rounded-tl-[4px] shadow-sm text-gray-800' : 'bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[20px] rounded-tr-[4px] text-white'}`}>
                   {msg.content}
                 </div>
-                <p className={`text-[10px] text-gray-300 mt-1 ${left ? 'ml-1' : 'mr-1 text-right'}`}>第{msg.round}話</p>
+                <p className={`text-[10px] text-gray-300 mt-1 ${left ? 'ml-1' : 'mr-1 text-right'}`}>{lang === 'ja' ? `第${msg.round}話` : `Round ${msg.round}`}</p>
               </div>
               {!left && <div className={`w-10 h-10 rounded-full ${getBg(msg.character)} flex items-center justify-center text-white shrink-0 mt-1`}>{getIcon(msg.character, 18)}</div>}
             </div>
@@ -139,7 +141,7 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
           <div className="mt-6 mb-4 animate-fadeIn">
             <div className="text-center mb-4">
               <span className="text-2xl">🎉</span>
-              <p className="text-gray-500 font-semibold text-sm mt-1">バトル終了！</p>
+              <p className="text-gray-500 font-semibold text-sm mt-1">{lang === 'ja' ? 'バトル終了！' : 'Battle Complete!'}</p>
             </div>
             <div className="bg-white rounded-2xl shadow-md p-4 space-y-3">
               <div className="flex items-center justify-center gap-3">
@@ -147,26 +149,28 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
                 <span className="text-xs font-bold text-gray-400">VS</span>
                 <div className={`w-10 h-10 rounded-full ${getBg(character2)} flex items-center justify-center text-white`}>{getIcon(character2, 18)}</div>
               </div>
-              <p className="text-center text-gray-500 text-xs">{topic} · {messages.length}メッセージ</p>
+              <p className="text-center text-gray-500 text-xs">{topic} · {messages.length} {t.messages}</p>
               <button onClick={() => {
                 const pick1 = messages.filter(m => m.character.id === character1.id).slice(-1)[0];
                 const pick2 = messages.filter(m => m.character.id === character2.id).slice(-1)[0];
                 const q1 = pick1 ? `${character1.name}「${pick1.content.slice(0, 60)}${pick1.content.length > 60 ? '…' : ''}」` : '';
                 const q2 = pick2 ? `${character2.name}「${pick2.content.slice(0, 60)}${pick2.content.length > 60 ? '…' : ''}」` : '';
-                const text = `🗣️ ${character1.name} vs ${character2.name}\nテーマ: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\nby @cody_labs_ai\n#AIトークバトル`;
+                const text = lang === 'ja'
+                  ? `🗣️ ${character1.name} vs ${character2.name}\nテーマ: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\nby @cody_labs_ai\n#AIトークバトル`
+                  : `🗣️ ${character1.name} vs ${character2.name}\nTopic: ${topic}\n\n${q1}\n${q2}\n\n👉 https://ai-talk-battle.vercel.app\nby @cody_labs_ai\n#AITalkBattle`;
                 const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
                 window.open(xUrl, '_blank');
               }}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-transform">
-                Xでシェア
+                {t.shareOnX}
               </button>
               <a href="https://buy.stripe.com/eVqeVc5PNfeb7ke6HYcMM02" target="_blank" rel="noopener noreferrer"
                 className="w-full py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-500 font-medium text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.97] transition-all hover:bg-gray-100 block">
-                ☕ コーヒー代をいただけると開発の励みになります
+                {t.tipJar}
               </a>
               <button onClick={onBack}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.97] transition-transform">
-                もう一度バトル
+                {t.playAgain}
               </button>
             </div>
           </div>
