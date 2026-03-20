@@ -42,7 +42,7 @@ export default function ChatScreen({ character1, character2, mode, topic, onComp
         const apiMessages: Message[] = messages.map((m, i) => ({ id: String(i), character: m.character, content: m.content, timestamp: new Date() }));
         const res = await fetch('/api/chat', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ character1, character2, mode, topic, history: apiMessages, currentSpeaker: speaker }),
+          body: JSON.stringify({ character1, character2, mode, topic, history: apiMessages, currentSpeaker: speaker, sessionId: typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('session_id') || undefined : undefined }),
         });
         if (!res.ok) throw new Error('API error');
         const reader = res.body?.getReader();

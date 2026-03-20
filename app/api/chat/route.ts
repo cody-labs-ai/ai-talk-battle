@@ -56,6 +56,30 @@ interface RequestBody {
   topic: string;
   history: Message[];
   currentSpeaker: Character;
+  sessionId?: string;
+}
+
+// Cache verified Stripe sessions (valid for 1 hour)
+const verifiedSessions = new Map<string, number>();
+
+async function verifyStripeSession(sessionId: string): Promise<boolean> {
+  const cached = verifiedSessions.get(sessionId);
+  if (cached && Date.now() < cached) return true;
+
+  const STRIPE_SK = process.env.STRIPE_SECRET_KEY;
+  if (!STRIPE_SK) return false;
+
+  const res = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
+    headers: { 'Authorization': `Basic ${btoa(STRIPE_SK + ':')}` },
+  });
+  if (!res.ok) return false;
+
+  const session = await res.json();
+  if (session.payment_status === 'paid') {
+    verifiedSessions.set(sessionId, Date.now() + 3_600_000); // cache 1 hour
+    return true;
+  }
+  return false;
 }
 
 export async function POST(req: Request) {
@@ -116,11 +140,18 @@ ${conversationHistory || '(まだ会話は始まっていません)'}
       });
     }
 
-    // Check if pro mode (use Anthropic Claude)
+    // Check if pro mode (use Anthropic Claude) — requires verified Stripe payment
     const isPro = mode.id === 'pro-brainstorm';
     let text = '';
 
     if (isPro && process.env.ANTHROPIC_API_KEY) {
+      const sessionId = body.sessionId;
+      if (!sessionId || !(await verifyStripeSession(sessionId))) {
+        return new Response(JSON.stringify({ error: 'Pro mode requires payment. Please complete checkout first.' }), {
+          status: 402,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
       const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
