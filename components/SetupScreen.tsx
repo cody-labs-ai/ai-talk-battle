@@ -10,6 +10,16 @@ const ICONS: Record<string, any> = { Flame, Snowflake, Users, Crown, Bot, Briefc
 const MODE_ICONS: Record<string, any> = { 'heated-argument': Flame, 'serious-debate': GraduationCap, 'business-brainstorm': Lightbulb, 'comedy-duo': Laugh, 'love-advice': Heart, 'pro-brainstorm': Sparkles };
 const PRO_MODES = new Set(['pro-brainstorm']);
 const PRO_PAYMENT_URL = 'https://buy.stripe.com/dRmaEW1zx0jh9smaYecMM01';
+const CHAR_I18N: Record<string, [string, string]> = {
+  'hotblooded-teacher': ['charHotbloodedTeacher', 'charDescHotbloodedTeacher'],
+  'cool-scientist': ['charCoolScientist', 'charDescCoolScientist'],
+  'osaka-auntie': ['charOsakaAuntie', 'charDescOsakaAuntie'],
+  'chuunibyou': ['charChuunibyou', 'charDescChuunibyou'],
+  'serious-ai': ['charSeriousAI', 'charDescSeriousAI'],
+  'woke-entrepreneur': ['charWokeEntrepreneur', 'charDescWokeEntrepreneur'],
+  'shakespearean': ['charShakespearean', 'charDescShakespearean'],
+  'devils-advocate': ['charDevilsAdvocate', 'charDescDevilsAdvocate'],
+};
 const MODE_I18N: Record<string, [string, string]> = {
   'heated-argument': ['heatedArgument', 'heatedArgumentDesc'],
   'serious-debate': ['seriousDebate', 'seriousDebateDesc'],
@@ -75,7 +85,7 @@ export default function SetupScreen({ onStart }: Props) {
       {char ? (
         <div className={`absolute inset-0 bg-gradient-to-br ${COLORS[characters.indexOf(char) % COLORS.length]} flex flex-col items-center justify-center gap-2`}>
           <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-white">{getIcon(char.iconName, 36)}</div>
-          <span className="text-white font-bold text-sm">{char.name}</span>
+          <span className="text-white font-bold text-sm">{CHAR_I18N[char.id] ? (t as any)[CHAR_I18N[char.id][0]] : char.name}</span>
         </div>
       ) : (
         <>
@@ -191,8 +201,8 @@ export default function SetupScreen({ onStart }: Props) {
                 <button key={ch.id} onClick={() => { modal === 1 ? setC1(ch) : setC2(ch); setModal(null); }}
                   className={`bg-gradient-to-br ${COLORS[i % COLORS.length]} p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer active:scale-95 transition-all`}>
                   <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center text-white">{getIcon(ch.iconName, 32)}</div>
-                  <span className="text-white font-bold text-sm">{ch.name}</span>
-                  <span className="text-white/60 text-[10px]">{ch.description}</span>
+                  <span className="text-white font-bold text-sm">{CHAR_I18N[ch.id] ? (t as any)[CHAR_I18N[ch.id][0]] : ch.name}</span>
+                  <span className="text-white/60 text-[10px]">{CHAR_I18N[ch.id] ? (t as any)[CHAR_I18N[ch.id][1]] : ch.description}</span>
                 </button>
               ))}
               <button onClick={() => { setCustomModal(modal); setModal(null); }}
