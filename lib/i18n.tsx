@@ -28,7 +28,7 @@ const translations = {
     messages: 'メッセージ',
     battleEnd: '🎉 バトル終了！',
     shareOnX: 'Xでシェア',
-    tipJar: '☕ コーヒー代をいただけると開発の励みになります',
+    tipJar: '☕ このサービスは無料でいくらでも遊べます。もし面白かったらコーヒー1杯おごってください！',
     playAgain: 'もう一度バトル',
     // Share
     shareTheme: 'テーマ',
@@ -79,7 +79,7 @@ const translations = {
     messages: 'messages',
     battleEnd: '🎉 Battle Complete!',
     shareOnX: 'Share on X',
-    tipJar: '☕ A coffee would fuel more development',
+    tipJar: '☕ This app is 100% free. If you enjoyed it, buy me a coffee!',
     playAgain: 'Battle Again',
     shareTheme: 'Topic',
     shareBy: 'by',
